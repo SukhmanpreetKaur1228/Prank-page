@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petite question 👀</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .card {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            color: #ff477e;
+            font-size: 26px;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            height: 50px;
+            position: relative;
+        }
+        button {
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #yes-btn {
+            background-color: #ff477e;
+            color: white;
+        }
+        #no-btn {
+            background-color: #6c757d;
+            color: white;
+            position: absolute;
+            transition: left 0.1s ease, top 0.1s ease;
+        }
+        .clown-zone {
+            display: none;
+        }
+        .clown-zone h1 {
+            color: #d90429;
+            font-size: 32px;
+        }
+        .clown-emoji {
+            font-size: 100px;
+            animation: spin 1s infinite linear;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Le Piège -->
+    <div class="card" id="main-card">
+        <h1>Suis-je ta personne ami préférée ? </h1>
+        <div class="btn-container">
+            <button id="yes-btn" onclick="gotcha()">Oui, absolument</button>
+            <button id="no-btn" onmouseover="moveButton()" onclick="moveButton()">Non</button>
+        </div>
+    </div>
+
+    <!-- La Révélation -->
+    <div class="card clown-zone" id="clown-card">
+        <div class="clown-emoji">🤡</div>
+        <h1>CHEH ! ALORS COMME ÇA ON N'A PAS LE CHOIX ?</h1>
+        <p style="font-size: 18px; color: #555; margin-top: 15px;">Tu as cru que tu pouvais dire non, espèce de bouffon ?</p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no-btn');
+        
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        function gotcha() {
+            // Generate a funny synthesized double-boop sound directly inside Chrome
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // First tone (high)
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'triangle'; 
+                osc1.frequency.setValueAtTime(300, audioCtx.currentTime); // Hz
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                osc1.start();
+                gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc1.stop(audioCtx.currentTime + 0.3);
+
+                // Second tone (low cartoon drop)
+                setTimeout(() => {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = 'sawtooth';
+                    osc2.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc2.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start();
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc2.stop(audioCtx.currentTime + 0.4);
+                }, 150);
+
+            } catch (e) {
+                console.log("Audio syntax fallback failed", e);
+            }
+
+            // Show the clown card
+            document.getElementById('main-card').style.display = 'none';
+            document.getElementById('clown-card').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
