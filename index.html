@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petite question 👀</title>
+    <title>Menu de Sélection 👀</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,56 +17,68 @@
         }
         .card {
             text-align: center;
-            background: white;
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            background: #0f172a;
+            border: 4px solid #ff477e;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 71, 126, 0.4);
             max-width: 400px;
-            width: 90%;
+            width: 85%;
+            transition: all 0.3s ease;
         }
         h1 {
-            color: #ff477e;
-            font-size: 26px;
+            color: #fff;
+            font-size: 24px;
             margin-bottom: 40px;
-            line-height: 1.4;
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
+        /* Grid layout for clean, standard game button positioning */
         .btn-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            height: 50px;
+            flex-direction: column;
+            gap: 20px;
             position: relative;
+            min-height: 150px;
+            justify-content: center;
         }
         button {
-            padding: 15px 35px;
+            padding: 15px 20px;
             font-size: 18px;
             font-weight: bold;
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.1s;
+        }
+        button:active {
+            transform: scale(0.95);
         }
         #yes-btn {
-            background-color: #ff477e;
+            background: #ff477e;
             color: white;
+            box-shadow: 0 4px 0 #b3224e;
+            z-index: 1;
         }
         #no-btn {
-            background-color: #6c757d;
+            background: #6c757d;
             color: white;
-            position: absolute;
-            transition: left 0.1s ease, top 0.1s ease;
+            box-shadow: 0 4px 0 #495057;
+            /* Using a high z-index so it stays on top of layout during movement */
+            z-index: 10; 
         }
         .clown-zone {
             display: none;
         }
         .clown-zone h1 {
-            color: #d90429;
-            font-size: 32px;
+            color: #ff477e;
+            font-size: 30px;
         }
         .clown-emoji {
-            font-size: 100px;
+            font-size: 90px;
+            margin-bottom: 10px;
             animation: spin 1s infinite linear;
         }
         @keyframes spin {
@@ -77,12 +89,12 @@
 </head>
 <body>
 
-    <!-- Le Piège -->
+    <!-- Le Piège (Game Interface) -->
     <div class="card" id="main-card">
-        <h1>Suis-je ta personne ami préférée ? </h1>
+        <h1>[ QUÊTE PRINCIPALE ]<br>Suis-je ta ami préférée ? </h1>
         <div class="btn-container">
             <button id="yes-btn" onclick="gotcha()">Oui, absolument</button>
-            <button id="no-btn" onmouseover="moveButton()" onclick="moveButton()">Non</button>
+            <button id="no-btn" onmouseover="moveButton()" ontouchstart="moveButton(event)" onclick="moveButton(event)">Non</button>
         </div>
     </div>
 
@@ -90,38 +102,43 @@
     <div class="card clown-zone" id="clown-card">
         <div class="clown-emoji">🤡</div>
         <h1>CHEH ! ALORS COMME ÇA ON N'A PAS LE CHOIX ?</h1>
-        <p style="font-size: 18px; color: #555; margin-top: 15px;">Tu as cru que tu pouvais dire non, espèce de bouffon ?</p>
+        <p style="font-size: 16px; color: #94a3b8; margin-top: 15px;">Tu as cru que tu pouvais dire non, espèce de bouffon ?</p>
     </div>
 
     <script>
         const noBtn = document.getElementById('no-btn');
         
-        function moveButton() {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+        function moveButton(e) {
+            // Prevent accidental double-firing on mobile touch screens
+            if (e) {
+                e.preventDefault();
+            }
+
+            // Calculate safe boundaries so the button stays fully visible on screen
+            const padding = 30;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - (padding * 2)) + padding;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
             
+            // Pop it out of the layout instantly to absolute coordinates
             noBtn.style.position = 'fixed';
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
         }
 
         function gotcha() {
-            // Generate a funny synthesized double-boop sound directly inside Chrome
+            // Internal synth audio (bulletproof for Chrome mobile)
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // First tone (high)
                 const osc1 = audioCtx.createOscillator();
                 const gain1 = audioCtx.createGain();
                 osc1.type = 'triangle'; 
-                osc1.frequency.setValueAtTime(300, audioCtx.currentTime); // Hz
+                osc1.frequency.setValueAtTime(300, audioCtx.currentTime);
                 osc1.connect(gain1);
                 gain1.connect(audioCtx.destination);
                 osc1.start();
                 gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc1.stop(audioCtx.currentTime + 0.3);
 
-                // Second tone (low cartoon drop)
                 setTimeout(() => {
                     const osc2 = audioCtx.createOscillator();
                     const gain2 = audioCtx.createGain();
@@ -134,12 +151,8 @@
                     gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                     osc2.stop(audioCtx.currentTime + 0.4);
                 }, 150);
+            } catch (e) {}
 
-            } catch (e) {
-                console.log("Audio syntax fallback failed", e);
-            }
-
-            // Show the clown card
             document.getElementById('main-card').style.display = 'none';
             document.getElementById('clown-card').style.display = 'block';
         }
